@@ -74,7 +74,7 @@ def get_current_patient(session: SessionDep, token: TokenDep) -> User:
         raise HTTPException(status_code=400, detail="Inactive user")
     return user
 
-CurrentPatient = Annotated[Menu, Depends(get_current_menu)]
+CurrentPatient = Annotated[Menu, Depends(get_current_patient)]
 
 def get_current_menu(session: SessionDep, token: TokenDep) -> Menu:
     try:
