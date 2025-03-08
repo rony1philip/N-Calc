@@ -38,7 +38,7 @@ def read_items(
         )
         items = session.exec(statement).all()
 
-    return ItemsPublic(data=items, count=count)
+    return PatientPublic(data=items, count=count)
 
 
 @router.get("/{id}", response_model=ItemPublic)

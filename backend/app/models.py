@@ -47,7 +47,7 @@ class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
-    Patients: list["Patient"] = Relationship(back_populates="owner", cascade_delete=True)
+    patients: list["Patient"] = Relationship(back_populates="owner", cascade_delete=True)
 
 # Properties to return via API, id is always required
 class UserPublic(UserBase):
@@ -125,11 +125,11 @@ class NewPassword(SQLModel):
 class PatientBase(SQLModel):
     full_name: str = Field(min_length=1, max_length=255)
     description: str | None = Field(default=None, max_length=255)
-    email: EmailStr = Field(max_length=55)
+    email: EmailStr = Field(max_length=100)
     phone_number: str = Field(max_length=20)
-    height: float = Field(max_length=20)
-    weight: float = Field(max_length=20)
-    gender: int = Field(max_length=20)
+    height: float = Field()
+    weight: float = Field()
+    gender: int = Field()
     birth_date: Optional[datetime] = Field(sa_column=Column(
         TIMESTAMP(timezone=True),
         nullable=False, 
@@ -139,7 +139,7 @@ class PatientBase(SQLModel):
 
 # Properties to receive on item creation
 class PatientCreate(PatientBase):
-    password: str = Field(min_length=8, max_length=40)
+    pass
 
 
 class PatientRegister(SQLModel):
@@ -164,7 +164,7 @@ class Patient(PatientBase, table=True):
     owner_id: uuid.UUID = Field(
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
-    owner: User | None = Relationship(back_populates="Patients")
+    owner: User | None = Relationship(back_populates="patients")
     created_datetime: Optional[datetime] = Field(sa_column=Column(
         TIMESTAMP(timezone=True),
         nullable=False,
@@ -175,7 +175,8 @@ class Patient(PatientBase, table=True):
 
 # Properties to return via API, id is always required
 class PatientPublic(PatientBase):
-    pass
+    id: uuid.UUID
+    owner_id: uuid.UUID
 
 
 class PatientsPublic(SQLModel):
