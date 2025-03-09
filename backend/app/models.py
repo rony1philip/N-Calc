@@ -152,11 +152,11 @@ class PatientRegister(SQLModel):
 class PatientUpdate(PatientBase):
     full_name: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore
     description: str | None = Field(default=None, max_length=255)
-    email: EmailStr | None = Field(max_length=55)
+    email: EmailStr | None = Field()
     phone_number: str | None  = Field(max_length=20)
-    height: float | None = Field(max_length=20)
-    weight: float | None = Field(max_length=20)
-    gender: int | None = Field(max_length=20)
+    height: float | None = Field()
+    weight: float | None = Field()
+    gender: int | None = Field()
 
 # Database model, database table inferred from class name
 class Patient(PatientBase, table=True):

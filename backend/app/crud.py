@@ -59,19 +59,20 @@ def create_item(*, session: Session, item_in: ItemCreate, owner_id: uuid.UUID) -
 
 
 def create_patient(*, session: Session,patient_create: PatientCreate, owner_id: uuid.UUID) -> Patient:
-    db_obj = Patient.model_validate(patient_create, update={"owner_id": owner_id, "created_datetime": datetime.now()})
-    session.add(db_obj)
+    db_patient = Patient.model_validate(patient_create, update={"owner_id": owner_id, "created_datetime": datetime.now()})
+    session.add(db_patient)
     session.commit()
-    session.refresh(db_obj)
-    return db_obj
+    session.refresh(db_patient)
+    return db_patient
 
 
 def get_caregiver_patients(*, session: Session, caregiver: User ) -> PatientsPublic:
     statement = select(Patient).where(Patient.owner_id == caregiver.id)
-    patients = session.exec(statement).all()
-    patients_public = PatientsPublic()
-    patients_public.data = [p for p in patients]
-    patients_public.count = len(patients_public.data)
+    patients = session.exec(statement).all() 
+    patients_public_data = [p for p in patients]
+    patients_public_count = len(patients_public_data)
+    patients_public = PatientsPublic(data=patients_public_data, count=patients_public_count)
+   
     return patients_public
 
 
@@ -88,10 +89,13 @@ def update_patient_info(*, session: Session,db_patient: Patient, patient_in: Pat
 
 
 
-def get_patient_by_email(*, session: Session, email: str) -> User | None:
-    statement = select(Patient).where(Patient.email == email)
-    session_patient = session.exec(statement).first()
-    return session_patient
+def get_patient(*, session: Session, id: uuid.UUID) -> Patient | None:
+    statement = select(Patient).where(Patient.id == id)
+    patient = session.exec(statement).first()
+    return patient
+
+    
+    
 
 #def create_menu(*, session: Session,menu_create: MenuCreate) -> Menu:
 #    db_obj = Menu.model_validate(
