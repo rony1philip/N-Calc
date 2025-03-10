@@ -23,8 +23,16 @@ import type {
   LoginResetPasswordResponse,
   LoginRecoverPasswordHtmlContentData,
   LoginRecoverPasswordHtmlContentResponse,
+  PatientsReadPatientsData,
+  PatientsReadPatientsResponse,
   PatientsCreatePatientData,
   PatientsCreatePatientResponse,
+  PatientsReadPatientData,
+  PatientsReadPatientResponse,
+  PatientsUpdatePatientData,
+  PatientsUpdatePatientResponse,
+  PatientsDeletePatientData,
+  PatientsDeletePatientResponse,
   PrivateCreateUserData,
   PrivateCreateUserResponse,
   UsersReadUsersData,
@@ -278,6 +286,31 @@ export class LoginService {
 
 export class PatientsService {
   /**
+   * Read Patients
+   * get patients of currentuser
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @returns PatientsPublic Successful Response
+   * @throws ApiError
+   */
+  public static readPatients(
+    data: PatientsReadPatientsData = {},
+  ): CancelablePromise<PatientsReadPatientsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/patients/",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
    * Create Patient
    * Create new patient.
    * @param data The data for the request.
@@ -293,6 +326,73 @@ export class PatientsService {
       url: "/api/v1/patients/",
       body: data.requestBody,
       mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read Patient
+   * Get patient.
+   * @param data The data for the request.
+   * @param data.id
+   * @returns PatientPublic Successful Response
+   * @throws ApiError
+   */
+  public static readPatient(
+    data: PatientsReadPatientData,
+  ): CancelablePromise<PatientsReadPatientResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/patients/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Update Patient
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns PatientPublic Successful Response
+   * @throws ApiError
+   */
+  public static updatePatient(
+    data: PatientsUpdatePatientData,
+  ): CancelablePromise<PatientsUpdatePatientResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/patients/{id}",
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Delete Patient
+   * Delete an Patient.
+   * @param data The data for the request.
+   * @param data.id
+   * @returns unknown Successful Response
+   * @throws ApiError
+   */
+  public static deletePatient(
+    data: PatientsDeletePatientData,
+  ): CancelablePromise<PatientsDeletePatientResponse> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/v1/patients/{id}",
+      path: {
+        id: data.id,
+      },
       errors: {
         422: "Validation Error",
       },
