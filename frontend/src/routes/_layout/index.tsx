@@ -1,7 +1,5 @@
 import { Box, Container, Text } from "@chakra-ui/react"
 import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
-
 import useAuth from "@/hooks/useAuth"
 
 export const Route = createFileRoute("/_layout/")({
