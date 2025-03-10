@@ -6,7 +6,7 @@ from sqlmodel import Field, Relationship, SQLModel, Column, TIMESTAMP, text, DAT
 from datetime import datetime
 from sqlalchemy import JSON
 from sqlalchemy import Column as Col
-import enum
+from datetime import datetime
 # Shared properties
 class UserBase(SQLModel):
     email: EmailStr = Field(unique=True, index=True, max_length=255)
@@ -135,6 +135,18 @@ class PatientBase(SQLModel):
         nullable=False, 
     ))
  
+class Patient(PatientBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    owner_id: uuid.UUID = Field(
+        foreign_key="user.id", nullable=False, ondelete="CASCADE"
+    )
+    owner: User | None = Relationship(back_populates="patients")
+    created_datetime: Optional[datetime] = Field(sa_column=Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ))
+    menus: list["Menu"] = Relationship(back_populates="owner", cascade_delete=True)
 
 
 # Properties to receive on item creation
@@ -159,24 +171,28 @@ class PatientUpdate(PatientBase):
     gender: int | None = Field()
 
 # Database model, database table inferred from class name
-class Patient(PatientBase, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    owner_id: uuid.UUID = Field(
-        foreign_key="user.id", nullable=False, ondelete="CASCADE"
-    )
-    owner: User | None = Relationship(back_populates="patients")
-    created_datetime: Optional[datetime] = Field(sa_column=Column(
-        TIMESTAMP(timezone=True),
-        nullable=False,
-        server_default=text("CURRENT_TIMESTAMP"),
-    ))
-    menus: list["Menu"] = Relationship(back_populates="owner", cascade_delete=True)
 
 
 # Properties to return via API, id is always required
 class PatientPublic(PatientBase):
     id: uuid.UUID
     owner_id: uuid.UUID
+
+    @classmethod
+    def form_patient(cls, patient: Patient):
+        return PatientPublic(
+            full_name=patient.full_name,
+            description=patient.description,
+            email=patient.email,
+            phone_number=patient.phone_number,
+            height=patient.height, 
+            weight=patient.weight, 
+            gender=patient.gender, 
+            birth_date=patient.birth_date, 
+            owner_id=patient.owner_id, 
+            id=patient.id
+        )
+  
 
 
 class PatientsPublic(SQLModel):
