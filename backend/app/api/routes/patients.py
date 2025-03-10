@@ -1,5 +1,5 @@
 import uuid
-from typing import Any
+
 
 from app import crud
 from fastapi import APIRouter, HTTPException
@@ -13,8 +13,8 @@ router = APIRouter(prefix="/patients", tags=["patients"])
 
 @router.get("/", response_model=PatientsPublic)
 def read_patients(
-    session: SessionDep, current_user: CurrentUser, skip: int = 0, limit: int = 100
-) -> Any:
+    session: SessionDep, current_user: CurrentUser, 
+) -> PatientsPublic:
    """
 get patients of currentuser
     """
@@ -24,7 +24,7 @@ get patients of currentuser
 
 
 @router.get("/{id}", response_model=PatientPublic)
-def read_patient(session: SessionDep, current_user: CurrentUser,id:uuid.UUID) -> Any:
+def read_patient(session: SessionDep, current_user: CurrentUser,id:uuid.UUID) -> PatientPublic:
     """
     Get patient.
     """
@@ -46,7 +46,7 @@ def read_patient(session: SessionDep, current_user: CurrentUser,id:uuid.UUID) ->
 @router.post("/", response_model=PatientPublic)
 def create_patient(
     *, session: SessionDep, current_user: CurrentUser, patient_in: PatientCreate
-) -> Any:
+) -> PatientPublic:
     """
     Create new patient.
     """
@@ -68,7 +68,7 @@ def create_patient(
 def update_patient(
     *,
     session: SessionDep, db_patient: Patient, patient_in: PatientUpdate,
-) -> Any:
+) -> PatientPublic:
     patient = crud.update_patient_info(session=session,db_patient=db_patient,patient_in=patient_in )
     return PatientPublic(
         full_name=patient.full_name,
@@ -87,7 +87,7 @@ def update_patient(
 @router.delete("/{id}")
 def delete_patient(
     session: SessionDep, current_user: CurrentUser, id: uuid.UUID
-) -> Any:
+) -> Message:
     """
     Delete an Patient.
     """
@@ -98,4 +98,4 @@ def delete_patient(
         raise HTTPException(status_code=400, detail="Not enough permissions")
     session.delete(patient)
     session.commit()
-    return Message(message="Patient deleted successfully")
+    return Message(message=f"Patient deleted successfully - {id}")

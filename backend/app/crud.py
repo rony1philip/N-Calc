@@ -3,7 +3,8 @@ import uuid
 from typing import Any
 
 
-from sqlmodel import  Session, select
+from sqlmodel import  Session, select, func
+
 
 from app.core.security import get_password_hash, verify_password
 from app.models import Item, ItemCreate, PatientUpdate, PatientsPublic, User, UserCreate, UserUpdate, Patient, PatientCreate
@@ -66,15 +67,48 @@ def create_patient(*, session: Session,patient_create: PatientCreate, owner_id: 
     return db_patient
 
 
-def get_caregiver_patients(*, session: Session, caregiver: User ) -> PatientsPublic:
-    statement = select(Patient).where(Patient.owner_id == caregiver.id)
-    patients = session.exec(statement).all() 
+def get_caregiver_patients(*, session: Session, caregiver: User ,skip: int = 0, limit: int = 100 ) -> PatientsPublic:
+   
+    if caregiver.is_superuser:
+      statement = select(Patient).offset(skip).limit(limit).w
+      
+    else:
+        statement = (
+            select(Patient)
+            .where(Patient.owner_id == caregiver.id)
+            .offset(skip)
+            .limit(limit)
+        )
+    patients = session.exec(statement).all()
     patients_public_data = [p for p in patients]
     patients_public_count = len(patients_public_data)
-    patients_public = PatientsPublic(data=patients_public_data, count=patients_public_count)
-   
+    patients_public = PatientsPublic(data=patients_public_data, count=patients_public_count)    
     return patients_public
 
+
+def get_caregiver_patients(*, session: Session, caregiver: User ,skip: int = 0, limit: int = 100 ) -> PatientsPublic:
+    statement = (
+        select(Patient)
+        .where(Patient.owner_id == caregiver.id)
+    )
+    
+    all_patients = session.exec(statement=statement).all()
+    print(all_patients)
+    print("+++++++++++++++++++++++++++")
+    if len(all_patients) <= 100:
+        patients = [p for p in all_patients]
+       
+    else:
+        first_100_patients_statement =  (
+            select(Patient)
+            .where(Patient.owner_id == caregiver.id)
+            .offset(skip)
+            .limit(limit)
+        )
+        patients = [p for p in session.exec(statement=first_100_patients_statement).all()]
+    patients_count = len(all_patients)
+    patients_public = PatientsPublic(data=patients, count=patients_count)    
+    return patients_public
 
 
 
