@@ -24,23 +24,15 @@ get patients of currentuser
 
 
 @router.get("/{id}", response_model=PatientPublic)
-def read_patient(session: SessionDep, current_user: CurrentUser,id:uuid.UUID) -> PatientPublic:
+def read_patient(session: SessionDep, current_user: CurrentUser,id:uuid.UUID) -> PatientPublic | None:
     """
     Get patient.
     """
     patient  = crud.get_patient(session=session,id=id)
-    return PatientPublic(
-        full_name=patient.full_name,
-        description=patient.description,
-        email=patient.email,
-        phone_number=patient.phone_number,
-        height=patient.height, 
-        weight=patient.weight, 
-        gender=patient.gender, 
-        birth_date=patient.birth_date, 
-        owner_id=patient.owner_id, 
-        id=patient.id
-    )
+    if current_user.id == patient.owner_id:
+        return PatientPublic.form_patient(patient=patient)
+    else:
+        return None
 
 
 @router.post("/", response_model=PatientPublic)
@@ -51,18 +43,7 @@ def create_patient(
     Create new patient.
     """
     patient = crud.create_patient(session=session, patient_create=patient_in, owner_id=current_user.id)
-    return PatientPublic(
-        full_name=patient.full_name,
-        description=patient.description,
-        email=patient.email,
-        phone_number=patient.phone_number,
-        height=patient.height, 
-        weight=patient.weight, 
-        gender=patient.gender, 
-        birth_date=patient.birth_date, 
-        owner_id=patient.owner_id, 
-        id=patient.id
-    )
+    return PatientPublic.form_patient(patient=patient)
 
 @router.put("/{id}", response_model=PatientPublic)
 def update_patient(
@@ -70,18 +51,7 @@ def update_patient(
     session: SessionDep, db_patient: Patient, patient_in: PatientUpdate,
 ) -> PatientPublic:
     patient = crud.update_patient_info(session=session,db_patient=db_patient,patient_in=patient_in )
-    return PatientPublic(
-        full_name=patient.full_name,
-        description=patient.description,
-        email=patient.email,
-        phone_number=patient.phone_number,
-        height=patient.height, 
-        weight=patient.weight, 
-        gender=patient.gender, 
-        birth_date=patient.birth_date, 
-        owner_id=patient.owner_id, 
-        id=patient.id
-    )
+    return PatientPublic.form_patient(patient=patient)
 
 
 @router.delete("/{id}")
