@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 max_tries = 60 * 5  # 5 minutes
-wait_seconds = 1
+wait_seconds = 3
 
 
 @retry(
@@ -22,9 +22,11 @@ wait_seconds = 1
 def init(db_engine: Engine) -> None:
     try:
         with Session(db_engine) as session:
+            print("_-------------------------------_")
             # Try to create session to check if DB is awake
             session.exec(select(1))
     except Exception as e:
+        print("_-------------------------------_")
         logger.error(e)
         raise e
 

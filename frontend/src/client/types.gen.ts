@@ -9,6 +9,11 @@ export type Body_login_login_access_token = {
   client_secret?: string | null
 }
 
+export type Body_patients_update_patient = {
+  db_patient: Patient
+  patient_in: PatientUpdate
+}
+
 export type HTTPValidationError = {
   detail?: Array<ValidationError>
 }
@@ -42,6 +47,67 @@ export type Message = {
 export type NewPassword = {
   token: string
   new_password: string
+}
+
+export type Patient = {
+  full_name: string
+  description?: string | null
+  email: string
+  phone_number: string
+  height: number
+  weight: number
+  gender: number
+  birth_date: string | null
+  id?: string
+  owner_id: string
+  created_datetime: string | null
+}
+
+export type PatientCreate = {
+  full_name: string
+  description?: string | null
+  email: string
+  phone_number: string
+  height: number
+  weight: number
+  gender: number
+  birth_date: string | null
+}
+
+export type PatientPublic = {
+  full_name: string
+  description?: string | null
+  email: string
+  phone_number: string
+  height: number
+  weight: number
+  gender: number
+  birth_date: string | null
+  id: string
+  owner_id: string
+}
+
+export type PatientsPublic = {
+  data: Array<PatientPublic>
+  count: number
+}
+
+export type PatientUpdate = {
+  full_name?: string | null
+  description?: string | null
+  email: string | null
+  phone_number: string | null
+  height: number | null
+  weight: number | null
+  gender: number | null
+  birth_date: string | null
+}
+
+export type PrivateUserCreate = {
+  email: string
+  password: string
+  full_name: string
+  is_verified?: boolean
 }
 
 export type Token = {
@@ -157,6 +223,43 @@ export type LoginRecoverPasswordHtmlContentData = {
 }
 
 export type LoginRecoverPasswordHtmlContentResponse = string
+
+export type PatientsReadPatientsData = {
+  limit?: number
+  skip?: number
+}
+
+export type PatientsReadPatientsResponse = PatientsPublic
+
+export type PatientsCreatePatientData = {
+  requestBody: PatientCreate
+}
+
+export type PatientsCreatePatientResponse = PatientPublic
+
+export type PatientsReadPatientData = {
+  id: string
+}
+
+export type PatientsReadPatientResponse = PatientPublic
+
+export type PatientsUpdatePatientData = {
+  requestBody: Body_patients_update_patient
+}
+
+export type PatientsUpdatePatientResponse = PatientPublic
+
+export type PatientsDeletePatientData = {
+  id: string
+}
+
+export type PatientsDeletePatientResponse = unknown
+
+export type PrivateCreateUserData = {
+  requestBody: PrivateUserCreate
+}
+
+export type PrivateCreateUserResponse = UserPublic
 
 export type UsersReadUsersData = {
   limit?: number

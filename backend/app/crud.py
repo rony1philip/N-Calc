@@ -1,10 +1,13 @@
+from datetime import datetime
 import uuid
 from typing import Any
 
-from sqlmodel import Session, select
+
+from sqlmodel import  Session, select, func
+
 
 from app.core.security import get_password_hash, verify_password
-from app.models import Item, ItemCreate, User, UserCreate, UserUpdate
+from app.models import Item, ItemCreate, PatientUpdate, PatientsPublic, User, UserCreate, UserUpdate, Patient, PatientCreate
 
 
 def create_user(*, session: Session, user_create: UserCreate) -> User:
@@ -52,3 +55,53 @@ def create_item(*, session: Session, item_in: ItemCreate, owner_id: uuid.UUID) -
     session.commit()
     session.refresh(db_item)
     return db_item
+
+
+
+
+def create_patient(*, session: Session,patient_create: PatientCreate, owner_id: uuid.UUID) -> Patient:
+    db_patient = Patient.model_validate(patient_create, update={"owner_id": owner_id, "created_datetime": datetime.now()})
+    session.add(db_patient)
+    session.commit()
+    session.refresh(db_patient)
+    return db_patient
+
+
+def get_caregiver_patients(*, session: Session, caregiver: User ,skip: int , limit: int  ) -> PatientsPublic:
+    count_statement = (
+            select(func.count())
+            .select_from(Patient)
+            .where(Patient.owner_id == caregiver.id)
+        )
+    count = session.exec(count_statement).one()
+    first_100_patients_statement =  (
+        select(Patient)
+        .where(Patient.owner_id == caregiver.id)
+        .offset(skip)
+        .limit(limit)
+    )
+    patients = [p for p in session.exec(statement=first_100_patients_statement).all()]
+    patients_public = PatientsPublic(data=patients, count=count)    
+    return patients_public
+
+
+
+def update_patient_info(*, session: Session,db_patient: Patient, patient_in: PatientUpdate) -> Any:
+    patient_data = patient_in.model_dump(exclude_unset=True)
+    extra_data = {}
+    db_patient.sqlmodel_update(patient_data, update=extra_data)
+    session.add(db_patient)
+    session.commit()
+    session.refresh(db_patient)
+    return db_patient
+
+
+
+def get_patient(*, session: Session, id: uuid.UUID) -> Patient | None:
+    statement = select(Patient).where(Patient.id == id)
+    patient = session.exec(statement).first()
+    return patient
+
+    
+    
+

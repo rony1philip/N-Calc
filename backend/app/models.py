@@ -1,9 +1,12 @@
 import uuid
-
-from pydantic import EmailStr
-from sqlmodel import Field, Relationship, SQLModel
-
-
+from typing import Optional
+from pydantic import BaseModel, EmailStr
+from pydantic import Field as F
+from sqlmodel import Field, Relationship, SQLModel, Column, TIMESTAMP, text, DATE
+from datetime import datetime
+from sqlalchemy import JSON
+from sqlalchemy import Column as Col
+from datetime import datetime
 # Shared properties
 class UserBase(SQLModel):
     email: EmailStr = Field(unique=True, index=True, max_length=255)
@@ -44,7 +47,7 @@ class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
-
+    patients: list["Patient"] = Relationship(back_populates="owner", cascade_delete=True)
 
 # Properties to return via API, id is always required
 class UserPublic(UserBase):
@@ -112,3 +115,144 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=40)
+
+
+################################################################################
+##                                 Start Here!                                ##
+################################################################################
+
+# Shared properties
+class PatientBase(SQLModel):
+    full_name: str = Field(min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=255)
+    email: EmailStr = Field(max_length=100)
+    phone_number: str = Field(max_length=20)
+    height: float = Field()
+    weight: float = Field()
+    gender: int = Field()
+    birth_date: Optional[datetime] = Field(sa_column=Column(
+        TIMESTAMP(timezone=True),
+        nullable=False, 
+    ))
+ 
+class Patient(PatientBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    owner_id: uuid.UUID = Field(
+        foreign_key="user.id", nullable=False, ondelete="CASCADE"
+    )
+    owner: User | None = Relationship(back_populates="patients")
+    created_datetime: Optional[datetime] = Field(sa_column=Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ))
+    menus: list["Menu"] = Relationship(back_populates="owner", cascade_delete=True)
+
+
+# Properties to receive on item creation
+class PatientCreate(PatientBase):
+    pass
+
+
+class PatientRegister(SQLModel):
+    email: EmailStr = Field(max_length=255)
+    password: str = Field(min_length=8, max_length=40)
+    full_name: str = Field(default=None, max_length=255)
+
+
+# Properties to receive on item update
+class PatientUpdate(PatientBase):
+    full_name: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore
+    description: str | None = Field(default=None, max_length=255)
+    email: EmailStr | None = Field()
+    phone_number: str | None  = Field(max_length=20)
+    height: float | None = Field()
+    weight: float | None = Field()
+    gender: int | None = Field()
+
+# Database model, database table inferred from class name
+
+
+# Properties to return via API, id is always required
+class PatientPublic(PatientBase):
+    id: uuid.UUID
+    owner_id: uuid.UUID
+
+    @classmethod
+    def form_patient(cls, patient: Patient):
+        return PatientPublic(
+            full_name=patient.full_name,
+            description=patient.description,
+            email=patient.email,
+            phone_number=patient.phone_number,
+            height=patient.height, 
+            weight=patient.weight, 
+            gender=patient.gender, 
+            birth_date=patient.birth_date, 
+            owner_id=patient.owner_id, 
+            id=patient.id
+        )
+  
+
+
+class PatientsPublic(SQLModel):
+    data: list[PatientPublic]
+    count: int
+
+class Menu_B(BaseModel):
+    def __init__(self):
+        self.data: dict = F(default=self.menu_builder())
+
+    def menu_builder(self):
+        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" , "Sunday"]
+        mills = ["breakfast",  "mid-morning", "lunch","mid-afternoon" , "dinner"]
+        new_menu = {}
+        for day in days:
+            new_menu.update({day:{mill:{} for mill in mills}})
+        self.data = new_menu 
+        return self.data
+
+# Shared properties
+class MenuBase(SQLModel,Menu_B):
+    title: str = Field(min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=255)
+    data: dict = Field(sa_column=Col(JSON), default_factory=dict)
+    current: bool = Field()
+
+
+# Properties to receive on item creation
+class MenuCreate(MenuBase):
+    pass
+
+
+# Properties to receive on item update
+class MenuUpdate(MenuBase):
+    title: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore
+    description: str | None = Field(default=None, max_length=255)
+    data: dict = Field(sa_column=Column(JSON), default_factory=dict)
+    current: bool = Field()
+
+# Database model, database table inferred from class name
+class Menu(MenuBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    title: str = Field(max_length=255)
+    created_datetime: Optional[datetime] = Field(sa_column=Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("CURRENT_TIMESTAMP"),
+    ))
+    owner_id: uuid.UUID = Field(
+        foreign_key="patient.id", nullable=False, ondelete="CASCADE"
+    )
+    owner: Patient | None = Relationship(back_populates="menus")
+
+
+# Properties to return via API, id is always required
+class MenuPublic(MenuBase):
+    pass
+
+
+class MenusPublic(SQLModel):
+    data: list[MenuPublic]
+    count: int
+
