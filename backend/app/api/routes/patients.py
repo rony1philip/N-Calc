@@ -18,7 +18,7 @@ def read_patients(
    """
 get patients of currentuser
     """
-   patients =  crud.get_caregiver_patients(session=session,caregiver=current_user)
+   patients =  crud.get_caregiver_patients(session=session,caregiver=current_user, skip=0, limit=100)
    return PatientsPublic(data=patients, count = len(patients))
 
 

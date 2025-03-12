@@ -86,28 +86,21 @@ def get_caregiver_patients(*, session: Session, caregiver: User ,skip: int = 0, 
     return patients_public
 
 
-def get_caregiver_patients(*, session: Session, caregiver: User ,skip: int = 0, limit: int = 100 ) -> PatientsPublic:
-    statement = (
+def get_caregiver_patients(*, session: Session, caregiver: User ,skip: int , limit: int  ) -> PatientsPublic:
+    count_statement = (
+            select(func.count())
+            .select_from(Item)
+            .where(Item.owner_id == caregiver.id)
+        )
+    count = session.exec(count_statement).one()
+    first_100_patients_statement =  (
         select(Patient)
         .where(Patient.owner_id == caregiver.id)
+        .offset(skip)
+        .limit(limit)
     )
-    
-    all_patients = session.exec(statement=statement).all()
-    print(all_patients)
-    print("+++++++++++++++++++++++++++")
-    if len(all_patients) <= 100:
-        patients = [p for p in all_patients]
-       
-    else:
-        first_100_patients_statement =  (
-            select(Patient)
-            .where(Patient.owner_id == caregiver.id)
-            .offset(skip)
-            .limit(limit)
-        )
-        patients = [p for p in session.exec(statement=first_100_patients_statement).all()]
-    patients_count = len(all_patients)
-    patients_public = PatientsPublic(data=patients, count=patients_count)    
+    patients = [p for p in session.exec(statement=first_100_patients_statement).all()]
+    patients_public = PatientsPublic(data=patients, count=count)    
     return patients_public
 
 
