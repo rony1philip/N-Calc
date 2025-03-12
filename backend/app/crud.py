@@ -67,30 +67,11 @@ def create_patient(*, session: Session,patient_create: PatientCreate, owner_id: 
     return db_patient
 
 
-def get_caregiver_patients(*, session: Session, caregiver: User ,skip: int = 0, limit: int = 100 ) -> PatientsPublic:
-   
-    if caregiver.is_superuser:
-      statement = select(Patient).offset(skip).limit(limit).w
-      
-    else:
-        statement = (
-            select(Patient)
-            .where(Patient.owner_id == caregiver.id)
-            .offset(skip)
-            .limit(limit)
-        )
-    patients = session.exec(statement).all()
-    patients_public_data = [p for p in patients]
-    patients_public_count = len(patients_public_data)
-    patients_public = PatientsPublic(data=patients_public_data, count=patients_public_count)    
-    return patients_public
-
-
 def get_caregiver_patients(*, session: Session, caregiver: User ,skip: int , limit: int  ) -> PatientsPublic:
     count_statement = (
             select(func.count())
-            .select_from(Item)
-            .where(Item.owner_id == caregiver.id)
+            .select_from(Patient)
+            .where(Patient.owner_id == caregiver.id)
         )
     count = session.exec(count_statement).one()
     first_100_patients_statement =  (
@@ -123,20 +104,4 @@ def get_patient(*, session: Session, id: uuid.UUID) -> Patient | None:
 
     
     
-
-#def create_menu(*, session: Session,menu_create: MenuCreate) -> Menu:
-#    db_obj = Menu.model_validate(
-#        menu_create
-#    )
-#    session.add(db_obj)
-#    session.commit()
-#    session.refresh(db_obj)
-#    return db_obj
-
-
-
-
-
-
-
 
