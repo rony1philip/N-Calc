@@ -32,7 +32,8 @@ def read_patient(session: SessionDep, current_user: CurrentUser,id:uuid.UUID) ->
     if current_user.id == patient.owner_id:
         return PatientPublic.form_patient(patient=patient)
     else:
-        return None
+        raise HTTPException(status_code=404, detail="Patient not found")
+        
 
 
 @router.post("/", response_model=PatientPublic)
