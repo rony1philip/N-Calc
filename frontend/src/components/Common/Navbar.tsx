@@ -14,7 +14,7 @@ function Navbar() {
       position="sticky"
       color="white"
       align="center"
-      bg="bg.muted"
+      bg="#A0C878"
       w="100%"
       top={0}
       p={4}
@@ -26,7 +26,7 @@ function Navbar() {
         <UserMenu />
       </Flex>
     </Flex>
-  )
+  );
 }
 
 export default Navbar

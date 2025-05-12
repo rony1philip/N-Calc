@@ -31,7 +31,7 @@ export const system = createSystem(defaultConfig, {
         ui: {
           main: { value: "#009688" },
           dark: { value: "#00695c" },
-          light: { value: "#e0f2f1" },
+          light: { value: "#DDEB9D" },
           background: { value: "#FAEBD7" },
           border: { value: "#e0e0e0" },
           text: { value: "#212121" },
