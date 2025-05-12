@@ -1,0 +1,213 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage{breqn} 
+\title{30203 – Introduction to Statistics and Probability for the Sciences}
+\author{Rony Philip}
+\date{ֿֿֿ\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{The Study On The Weight Of Watermelons}
+As part of a study on the weight of watermelons that arrive at the markets, 100 watermelons were weighed randomly from stands in the Carmel Market. The data collected are presented in the following table:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{figs/table1.png}
+    \caption{Watermelons Table}
+    \label{watermelons}
+\end{figure}
+
+\subsection{Visual representations of a data - histogram}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{figs/Histogram1.png}
+    \caption{Watermelons Histogram}
+    \label{watermelons}
+\end{figure}
+\subsection{Central Tendency And Variance}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{figs/table1.1.png}
+    \caption{Watermelons Table}
+    \label{watermelons}
+\end{figure}
+\subsubsection{$Mo = 5.5$ k"g}
+First we calculate the class density, the mean is equal to the median of the class with the highest density.
+
+equation:
+\begin{equation*}
+    d =  \frac{f(x)}{L_1-L_0} 
+\end{equation*}
+
+\begin{equation*}
+    deprtment: f(x) = 6-5
+\end{equation*}
+
+Substitution:
+\begin{equation*}
+    \frac{6+5}{2}=5.5
+\end{equation*}
+
+\subsubsection {$\overline{x}$ = 5.9 K"g}
+The midpoints of the classes are used for substitution.
+
+
+equation:
+\begin{equation*}
+    \overline{x} = \frac{1}{n} \sum x*f(X)\\ 
+\end{equation*}
+
+Substitution:
+\begin{equation*}
+   5.9 = \frac{1}{100}\\(4*30+5.5*25+6.5*20+7.5*15+9*10)
+\end{equation*}
+\subsubsection{$Md = 5.8$ K"g}
+To calculate the median, we look for the first class whose cumulative frequency exceeds half the sample size
+
+equation:
+\begin{equation*}
+    Md = L_0 +\frac{\frac{50n}{100} - F(x_{m-1})}{f(x_m)}(L_1 - L_2)
+\end{equation*}
+
+Variables:
+\begin{equation*}
+    L_1=6 \qquad L_0=5 \qquad f(x_m) = 25, \qquad F(x_{m-1})= 30
+\end{equation*}
+
+Substitution:
+\begin{equation*}
+    5.8 = 5 +\frac{\frac{50*100}{100} - 30}{25}(6 - 5)
+\end{equation*}
+\subsubsection{$S_x^2 = 2.54$}
+
+equation:
+\begin{equation*}
+    S_x^2 = \frac{1}{n} \sum x^2*f(x) - \overline{x}^2
+\end{equation*}
+
+Substitution:
+\begin{equation*}
+    2.54 = \frac{1}{100} (4^2*30+5.5^2*25+6.5^2*20+7.5*15+9^2*10)
+\end{equation*}
+\subsection{The heavier watermelon question}
+The weight of Tom's watermelon is in the 60 percentile.
+percentile equation:
+\begin{equation*}
+    Ck = L_0 + \frac{\frac{kn}{100}-F(x_m-_1)}{f(x_m)}(L_1 - L_0)
+\end{equation*}
+
+Finding the department:
+\begin{equation*}
+    100* \frac{60}{100} = 60
+\end{equation*}
+
+after finding the first department with $F(x)>60$ 
+
+department:$ f(x) = 20$
+
+Substitution:
+\begin{equation*}
+    C_{60} = 6 + \frac{60*100-55}{20}(7-6)
+\end{equation*}
+
+$Ck = 6.25$
+
+tom watermelon weight 6.25 K"g.
+
+Nadav's watermelon standard score: $0.6$
+
+standard score equation:
+
+\begin{equation*}
+    Z_x = \frac{x - \overline{x}}{S^2_x}
+\end{equation*}
+
+finding $S_x$:
+\begin{equation*}
+    \sqrt{2.54} =1.59 = S_x  
+\end{equation*}
+
+Substitution for finding x:
+
+\begin{equation*}
+    0.6 = \frac{x-5.9}{1.59}
+\end{equation*}
+
+\begin{equation*}
+    0.6 * 1.59 = x - 59
+\end{equation*}
+
+\begin{equation*}
+    x = 0.95+5.9 = 6.85
+\end{equation*}
+
+Nadav's watermelon weight 6.85 K"g\\
+\begin{equation*}
+    6.85 > 6.25
+\end{equation*}
+
+Nadav has the heavier watermelon.
+\subsection{the average and variance of all 250 watermelons tested.}
+\subsubsection{\overline{x} = 6.02 k"g}
+
+first we will find $\overline{x}$ using the $n$ parameter $(n_1+n_2 = n)$ 
+
+Variables:
+\begin{equation*}
+    \overline{x}_1 = 5.9 \qquad \overline{x}_2 = 6.1 \qquad 
+\end{equation*}
+\begin{equation*}
+    S^2_{x1} = 2.54 \qquad S^2_{x2} = 3.09 \qquad 
+\end{equation*}
+\begin{equation*}
+    n_1 = 100 \qquad n_2 = 150 \qquad 
+\end{equation*}
+
+equations:
+
+\begin{equation*}
+    \frac{\overline{x}_1* n_1 + \overline{x}_2* n_2}{n_1 + n_2} = \overline{x}
+\end{equation*}
+
+Substitution:
+
+\begin{equation*}
+    \frac{5.9* 100 + 6.1* 150}{100 + 150} = 6.02
+\end{equation*}
+
+\subsubsection{$Mo$}
+\section{The Number Of Cell Phones Specimen}
+In a certain settlement, data were collected on the number of cell phones owned by each family.
+The number of families that own one and four phones was unclear.
+The average number of cell phones owned by a family is known to be 2.4 and the median is 2.5.
+The data is presented in the following table:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{figs/table2.png}
+    \caption{Cell Phones Table}
+    \label{watermelons}
+\end{figure}
+\subsection{The missing $Mo$ (a and b)}
+\subsection{Visual representations of a data - Stick Chart}
+\subsection{the average and variance  distribution of cell phones per family}
+
+\subsection{The number of minutes per family use landline phones during a month.T/F}
+\subsubsection{}
+\subsubsection{}
+\subsection{}
+\section{Q}
+
+\subsection{}
+\subsection{The number of minutes per family use landline phones during a month.  }
+\subsubsection{}
+\subsubsection{}
+
+\end{document}
+ֹֹ
+\end{document}
+ֹֹ
