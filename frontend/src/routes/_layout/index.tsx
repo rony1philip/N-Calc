@@ -1,6 +1,5 @@
 import { Box, Container, Text } from "@chakra-ui/react"
 import { createFileRoute } from "@tanstack/react-router"
-import { Combobox } from "/Users/ronyphilip/Desktop/N-CALC/N-Calc/frontend/src/components/Common/combobox";
 import useAuth from "@/hooks/useAuth"
 
 export const Route = createFileRoute("/_layout/")({
@@ -9,6 +8,7 @@ export const Route = createFileRoute("/_layout/")({
 
 function Dashboard() {
   const { user: currentUser } = useAuth()
+  console.log("MAIN LOADED!");
 
   return (
     <>
@@ -18,8 +18,7 @@ function Dashboard() {
             Hi, {currentUser?.full_name || currentUser?.email} 👋🏼
            
           </Text>
-          <Text>Welcome back, nice to see you again!</Text>
-          <Combobox></Combobox>
+          <Text>Welcome backfffff, nice to see you again!</Text>
         </Box>
 
       </Container>

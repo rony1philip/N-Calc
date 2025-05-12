@@ -5,14 +5,15 @@ export const system = createSystem(defaultConfig, {
   globalCss: {
     html: {
       fontSize: "16px",
-      direction: "rtl", // תמיכה בעברית
+      height: "100%",
     },
     body: {
-      fontSize: "14px",
+      height: "100%",
+      fontSize: "25px",
       margin: 0,
       padding: 0,
       fontFamily: "Rubik, sans-serif",
-      backgroundColor: "#FFFBDE",
+      backgroundColor: "#FAEBD7",
       color: "#212121",
     },
     a: {
@@ -31,10 +32,10 @@ export const system = createSystem(defaultConfig, {
           main: { value: "#009688" },
           dark: { value: "#00695c" },
           light: { value: "#e0f2f1" },
-          background: { value: "#f7f9fc" },
+          background: { value: "#FAEBD7" },
           border: { value: "#e0e0e0" },
           text: { value: "#212121" },
-          link: { value: "#1976d2" }
+          link: { value: "#212121" }
         },
       },
 
@@ -45,12 +46,14 @@ export const system = createSystem(defaultConfig, {
       },
 
       fontSizes: {
-        xs: { value: "0.75rem" },
-        sm: { value: "0.875rem" },
-        md: { value: "1rem" },
-        lg: { value: "1.125rem" },
-        xl: { value: "1.25rem" },
-      },
+        xs: { value: "1.50rem" },
+        sm: { value: "1.50rem" },
+        md: { value: "1.125rem" },
+        lg: { value: "1.5rem" },       // ← תפריט / טקסט רגיל גדול יותר
+        xl: { value: "2rem" },         // ← כותרות
+        "2xl": { value: "2.5rem" },    // ← כותרות גדולות מאוד
+},
+
 
       radii: {
         none: { value: "0" },
